@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Nandita! 🎂</title>
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       ============================================================ */
+    :root {
+      --bg: #09090f;
+      --gold: #f5c518;
+      --gold-soft: rgba(245, 197, 24, 0.15);
+      --rose: #ff7eb3;
+      --white: #ffffff;
+      --white-70: rgba(255,255,255,0.7);
+      --white-40: rgba(255,255,255,0.4);
+      --white-10: rgba(255,255,255,0.08);
+      --white-05: rgba(255,255,255,0.04);
+      --radius: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Sparkle canvas — sits behind everything */
+    #sparkles {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 5rem;
+      text-align: center;
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .hero-title {
+      font-size: clamp(2.6rem, 9vw, 5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(140deg, #ffffff 20%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.6rem;
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 3rem;
+    }
+
+    /* ============================================================
+       PHOTO
+       ============================================================ */
+    .photo-wrap {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 2.5rem;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--gold);
+      box-shadow:
+        0 0 0 6px var(--gold-soft),
+        0 0 60px rgba(245, 197, 24, 0.25),
+        0 0 120px rgba(245, 197, 24, 0.08);
+      animation: photoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes photoPulse {
+      0%, 100% { box-shadow: 0 0 0 6px var(--gold-soft), 0 0 60px rgba(245,197,24,0.25), 0 0 120px rgba(245,197,24,0.08); }
+      50%       { box-shadow: 0 0 0 10px var(--gold-soft), 0 0 80px rgba(245,197,24,0.35), 0 0 140px rgba(245,197,24,0.12); }
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ============================================================
+       MESSAGE
+       ============================================================ */
+    .message {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--white-70);
+      max-width: 540px;
+      margin: 0 auto 3rem;
+    }
+
+    .message strong { color: var(--white); }
+    .message em { color: var(--white-40); font-style: italic; }
+
+    /* ============================================================
+       HUMOR BUTTONS
+       ============================================================ */
+    .buttons-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 1rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .wish-btn {
+      background: var(--white-05);
+      border: 1px solid var(--white-10);
+      color: var(--white);
+      padding: 1.1rem 1.25rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: Georgia, serif;
+      transition: border-color 0.25s, background 0.25s, transform 0.2s;
+      text-align: left;
+      width: 100%;
+    }
+
+    .wish-btn:hover {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+      transform: translateY(-2px);
+    }
+
+    .wish-btn:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .wish-btn.is-open {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+    }
+
+    .btn-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+    .btn-title {
+      font-size: 0.95rem;
+      color: var(--white-70);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--white-40);
+      transition: transform 0.25s;
+      font-style: normal;
+    }
+
+    .wish-btn.is-open .btn-arrow { transform: rotate(90deg); }
+
+    .wish-reveal {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--white-10);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--white-70);
+      font-style: italic;
+    }
+
+    .wish-btn.is-open .wish-reveal { display: block; }
+
+    .wish-reveal em {
+      color: var(--white-40);
+      display: block;
+      font-size: 0.82rem;
+      margin-top: 0.75rem;
+    }
+
+    /* ============================================================
+       SIGN OFF
+       ============================================================ */
+    .signoff {
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--white-10);
+    }
+
+    .signoff-from {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 0.6rem;
+    }
+
+    .signoff-names {
+      font-size: 1.5rem;
+      background: linear-gradient(120deg, var(--white) 40%, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+
+    .signoff-roles {
+      font-size: 0.8rem;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      .photo-wrap { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="sparkles" aria-hidden="true"></canvas>
+
+<div class="page">
+
+  <!-- ============================================================
+       UPDATE THIS BLOCK FOR EACH NEW OCCASION
+       ============================================================
+       Fields to change:
+         <title>          — page tab title
+         .eyebrow         — occasion type e.g. "Happy Birthday" / "Happy Anniversary"
+         .hero-title      — person's name
+         .tagline         — relationship line
+         .photo-wrap img  — src stays wishespicture.jpg, update alt
+         .message         — main warm message (keep it personal)
+         .wish-btn ×3     — each button's funny reveal text
+         .signoff-names   — wishers (e.g. "Omyra, Ritika & Vivek")
+         .signoff-roles   — their relationship to person
+       ============================================================ -->
+
+  <span class="eyebrow">✨ Happy Birthday ✨</span>
+
+  <h1 class="hero-title">Nandita!</h1>
+
+  <p class="tagline">Omyra's Mausi &nbsp;·&nbsp; Ritika's Elder Didi &nbsp;·&nbsp; Vivek's Favourite Sali</p>
+
+  <div class="photo-wrap">
+    <img src="wishespicture.jpg" alt="Nandita Sharma" />
+  </div>
+
+  <p class="message">
+    To someone who holds <strong>three very important roles</strong> in this family —
+    the Mausi who Omyra runs to first, the Didi who Ritika pretends not to need advice from
+    <em>(but quietly does)</em>, and the Sali that Vivek has ranked number one
+    <em>(the audit committee has not reviewed competing claims)</em> —
+    may your birthday be as extraordinary as the person you are.
+    You deserve every good thing today. Especially cake. Mostly cake.
+  </p>
+
+  <p class="buttons-label">Tap for special messages</p>
+
+  <div class="buttons">
+
+    <button class="wish-btn" onclick="this.classList.toggle('is-open')" aria-expanded="false">
+      <div class="btn-header">
+        <span class="btn-emoji">🧸</span>
+        <span class="btn-title">Omyra's Very Important Message</span>
+        <span class="btn-arrow" aria-hidden="true">›</span>
+      </div>
+      <div class="wish-reveal">
+        MAUSI! MAUSI! It's your birthday!! 🎉🎉<br><br>
+        Mama said I have to say something nice, but I would have anyway because you're my FAVOURITE.
+        You always give me extra snacks and you never tell me it's bedtime.
+        That's what makes a great Mausi.<br><br>
+        I drawed you a picture but it got a bit wet. But the love is still there.
+        Happy Birthday! Can I have your cake? Just a little bit.
+        <em>— Omyra (your most excellent Bhanji) 🎨</em>
+      </div>
+    </button>
+
+    <button class="wish-btn" onclick="this.classList.toggle('is-open')" aria-expanded="false">
+      <div class="btn-header">
+        <span class="btn-emoji">😅</span>
+        <span class="btn-title">Didi, honestly speaking...</span>
+        <span class="btn-arrow" aria-hidden="true">›</span>
+      </div>
+      <div class="wish-reveal">
+        Okay Didi. Real talk, between sisters.<br><br>
+        You've been telling me what to do since before I could walk.
+        You've been right an annoyingly high percentage of the time.
+        I will not be giving you the exact number.<br><br>
+        I wouldn't trade you for anything — except on certain Sundays,
+        and even then I'd want you back by evening.
+        You make this family louder, warmer, and considerably more opinionated.
+        We wouldn't have it any other way.<br><br>
+        Happy Birthday, Didi. This year is yours. 💕
+        <em>— Ritika (your much cooler, slightly younger sister)</em>
+      </div>
+    </button>
+
+    <button class="wish-btn" onclick="this.classList.toggle('is-open')" aria-expanded="false">
+      <div class="btn-header">
+        <span class="btn-emoji">📋</span>
+        <span class="btn-title">Vivek's Official Statement</span>
+        <span class="btn-arrow" aria-hidden="true">›</span>
+      </div>
+      <div class="wish-reveal">
+        <em>The following statement has been reviewed, stamped, and formally approved by the
+        Office of Favourite Sali Rankings (OFSR), established 2024, sole jurisdiction: this family.</em><br><br>
+        Nandita ji —<br><br>
+        On behalf of myself, and no other Salis, I wish you a very Happy Birthday.
+        You have, over the years, brought warmth, excellent cooking, and the kind of
+        unsolicited feedback that I have come to deeply rely upon.<br><br>
+        Your position at the top of the Sali Rankings remains uncontested, unaudited,
+        and frankly — unchallenged. The trophy is in the mail. It's been in the mail for three years.
+        It will arrive.<br><br>
+        May this birthday bring you everything wonderful.
+        <em>— Vivek (Chairman, OFSR · Jija · Biggest Fan)</em>
+      </div>
+    </button>
+
+  </div>
+
+  <div class="signoff">
+    <p class="signoff-from">With all our love, from</p>
+    <p class="signoff-names">Omyra, Ritika &amp; Vivek</p>
+    <p class="signoff-roles">Your Bhanji &nbsp;·&nbsp; Your Chhoti Behn &nbsp;·&nbsp; Your Jija</p>
+  </div>
+
+</div>
+
+<script>
+/* Floating sparkles — canvas animation */
+(function () {
+  'use strict';
+  var canvas = document.getElementById('sparkles');
+  var ctx = canvas.getContext('2d');
+  var W, H, particles = [];
+  var COLORS = ['#f5c518', '#ffffff', '#ff7eb3', '#ffb347', '#c8f5a0'];
+  var COUNT = 90;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Particle() { this.init(); }
+  Particle.prototype.init = function (fromBottom) {
+    this.x = Math.random() * W;
+    this.y = fromBottom ? H + Math.random() * 20 : Math.random() * H;
+    this.r = Math.random() * 1.8 + 0.4;
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.alpha = Math.random() * 0.5 + 0.15;
+    this.vy = -(Math.random() * 0.4 + 0.1);
+    this.vx = (Math.random() - 0.5) * 0.25;
+    this.phase = Math.random() * Math.PI * 2;
+    this.freq = Math.random() * 0.03 + 0.01;
+  };
+  Particle.prototype.update = function () {
+    this.phase += this.freq;
+    this.alpha = 0.15 + Math.abs(Math.sin(this.phase)) * 0.45;
+    this.y += this.vy;
+    this.x += this.vx;
+    if (this.y < -10) this.init(true);
+  };
+  Particle.prototype.draw = function () {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+  for (var i = 0; i < COUNT; i++) particles.push(new Particle());
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* Button aria-expanded toggle */
+document.querySelectorAll('.wish-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var open = this.classList.contains('is-open');
+    this.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+});
+</script>
+
+</body>
+</html>
