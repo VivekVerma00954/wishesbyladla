@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Birthday Nandita! 🎂</title>
+  <title>Happy Birthday Nandita! 🎂🎉</title>
   <style>
     /* ============================================================
        DESIGN TOKENS
@@ -58,6 +58,19 @@
     /* ============================================================
        HERO
        ============================================================ */
+    .birthday-badge {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      display: block;
+      animation: badgeBounce 1.6s ease-in-out infinite;
+      letter-spacing: 0.4em;
+    }
+
+    @keyframes badgeBounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
     .eyebrow {
       display: inline-block;
       font-size: 0.72rem;
@@ -69,14 +82,30 @@
     }
 
     .hero-title {
-      font-size: clamp(2.6rem, 9vw, 5rem);
+      font-size: clamp(2rem, 6vw, 3.5rem);
       font-weight: 700;
       line-height: 1.1;
       background: linear-gradient(140deg, #ffffff 20%, var(--gold) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-name {
+      font-size: clamp(3.2rem, 11vw, 6rem);
+      display: block;
+      background: linear-gradient(120deg, var(--gold) 0%, #fff 50%, var(--gold) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: nameShimmer 3s linear infinite;
+    }
+
+    @keyframes nameShimmer {
+      0%   { background-position: 0% center; }
+      100% { background-position: 200% center; }
     }
 
     .tagline {
@@ -262,6 +291,8 @@
        ============================================================ */
     @media (prefers-reduced-motion: reduce) {
       .photo-wrap { animation: none; }
+      .birthday-badge { animation: none; }
+      .hero-name { animation: none; background: var(--gold); }
     }
   </style>
 </head>
@@ -286,11 +317,13 @@
          .signoff-roles   — their relationship to person
        ============================================================ -->
 
-  <span class="eyebrow">✨ Happy Birthday ✨</span>
+  <div class="birthday-badge" aria-hidden="true">🎂 &nbsp; 🎉 &nbsp; 🥳</div>
 
-  <h1 class="hero-title">Nandita!</h1>
+  <span class="eyebrow">It's a very special day</span>
 
-  <p class="tagline">Omyra's Mausi &nbsp;·&nbsp; Ritika's Elder Didi &nbsp;·&nbsp; Vivek's Favourite Sali</p>
+  <h1 class="hero-title">Happy Birthday<br><span class="hero-name">Nandita!</span></h1>
+
+  <p class="tagline">Omyra's Sohni Mausi &nbsp;·&nbsp; Ritika's Pyari Didi &nbsp;·&nbsp; Vivek's Favourite Sali</p>
 
   <div class="photo-wrap">
     <img src="wishespicture.jpg" alt="Nandita Sharma" />
