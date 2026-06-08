@@ -609,7 +609,7 @@ document.querySelectorAll('.wish-btn').forEach(function (btn) {
    SAVE HELPERS
    ============================================================ */
 
-/* Expand all 3 wish panels (returns a list of which were already open) */
+/* Expand all 3 wish panels — returns which were already open */
 function expandAll() {
   var btns = document.querySelectorAll('.wish-btn');
   var wasOpen = [];
@@ -621,56 +621,84 @@ function expandAll() {
   return wasOpen;
 }
 
-/* Restore panels to their previous open/closed state */
+/* Restore panels to their previous state */
 function restoreOpen(wasOpen) {
-  var btns = document.querySelectorAll('.wish-btn');
-  btns.forEach(function (b, i) {
+  document.querySelectorAll('.wish-btn').forEach(function (b, i) {
     if (wasOpen[i]) {
-      b.classList.add('is-open');
-      b.setAttribute('aria-expanded', 'true');
+      b.classList.add('is-open'); b.setAttribute('aria-expanded', 'true');
     } else {
-      b.classList.remove('is-open');
-      b.setAttribute('aria-expanded', 'false');
+      b.classList.remove('is-open'); b.setAttribute('aria-expanded', 'false');
     }
   });
 }
 
-/* Status bar helpers */
+/* ============================================================
+   GRADIENT TEXT PATCH
+   html2canvas cannot render -webkit-background-clip:text —
+   it renders the raw gradient stripe behind the text instead.
+   Fix: swap affected elements to solid colours before capture,
+   restore original styles immediately after.
+   ============================================================ */
+function patchGradient() {
+  var items = [
+    { sel: '.hero-title',    css: 'background:none!important;-webkit-text-fill-color:#ffffff!important;color:#ffffff!important;' },
+    { sel: '.hero-name',     css: 'background:none!important;-webkit-text-fill-color:#f5c518!important;color:#f5c518!important;animation:none!important;' },
+    { sel: '.signoff-names', css: 'background:none!important;-webkit-text-fill-color:#ffffff!important;color:#ffffff!important;' },
+  ];
+  items.forEach(function (item) {
+    var el = document.querySelector(item.sel);
+    if (el) { item._prev = el.getAttribute('style') || ''; el.setAttribute('style', item.css); }
+  });
+  return items;
+}
+
+function unpatchGradient(items) {
+  items.forEach(function (item) {
+    var el = document.querySelector(item.sel);
+    if (el) {
+      if (item._prev) el.setAttribute('style', item._prev);
+      else el.removeAttribute('style');
+    }
+  });
+}
+
+/* Status bar */
 function setStatus(msg, cls) {
   var el = document.getElementById('save-status');
   el.textContent = msg;
   el.className = 'save-status' + (cls ? ' ' + cls : '');
 }
 
-/* Derive a safe filename from the person's name shown on page */
+/* Safe filename from person's name on page */
 function getFilename(ext) {
   var raw = document.querySelector('.hero-name');
   var name = raw ? raw.textContent.replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase() : 'wishes';
-  var year = new Date().getFullYear();
-  return 'wishes-' + name + '-' + year + '.' + ext;
+  return 'wishes-' + name + '-' + new Date().getFullYear() + '.' + ext;
 }
 
-/* Lock/unlock both buttons during processing */
+/* Lock/unlock buttons during processing */
 function lockBtns(locked) {
   document.getElementById('btn-image').disabled = locked;
   document.getElementById('btn-video').disabled = locked;
 }
 
+/* Easing — ease-in-out cubic */
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 /* ============================================================
    SAVE AS IMAGE (PNG)
-   Uses html2canvas to composite sparkles + page content
+   Full-height composite: dark bg + tiled sparkles + page snap
    ============================================================ */
 function saveAsImage() {
-  if (typeof html2canvas === 'undefined') {
-    setStatus('Library not loaded — check your connection.', 'is-error');
-    return;
-  }
+  if (typeof html2canvas === 'undefined') { setStatus('Library not loaded — check your connection.', 'is-error'); return; }
   lockBtns(true);
   setStatus('Preparing image…', 'is-active');
 
-  var wasOpen = expandAll();
+  var wasOpen  = expandAll();
+  var gradient = patchGradient();
 
-  /* Wait a frame for the DOM to render expanded panels */
   setTimeout(function () {
     var page = document.getElementById('wish-page');
     html2canvas(page, {
@@ -680,31 +708,32 @@ function saveAsImage() {
       allowTaint: true,
       scrollX: 0,
       scrollY: 0,
-      width: page.offsetWidth,
+      width:  page.offsetWidth,
       height: page.scrollHeight,
       windowWidth: page.offsetWidth,
     }).then(function (pageSnap) {
+      unpatchGradient(gradient);
 
-      /* Composite: background fill + sparkles (top portion) + page */
       var sparkCvs = document.getElementById('sparkles');
       var W = pageSnap.width;
       var H = pageSnap.height;
 
       var out = document.createElement('canvas');
-      out.width  = W;
-      out.height = H;
+      out.width = W; out.height = H;
       var ctx = out.getContext('2d');
 
+      /* Dark background */
       ctx.fillStyle = '#09090f';
       ctx.fillRect(0, 0, W, H);
 
-      /* Tile/clip sparkles across full height */
-      var sparkH = sparkCvs.height;
-      for (var y = 0; y < H; y += sparkH) {
-        ctx.drawImage(sparkCvs, 0, y, sparkCvs.width, Math.min(sparkH, H - y));
+      /* Tile sparkles vertically across full height */
+      var sH = sparkCvs.height || window.innerHeight;
+      for (var y = 0; y < H; y += sH) {
+        ctx.drawImage(sparkCvs, 0, 0, sparkCvs.width, sparkCvs.height,
+                      0, y, W, Math.min(sH, H - y));
       }
 
-      /* Page content centred */
+      /* Page content on top */
       ctx.drawImage(pageSnap, 0, 0);
 
       var link = document.createElement('a');
@@ -713,11 +742,12 @@ function saveAsImage() {
       link.click();
 
       restoreOpen(wasOpen);
-      setStatus('Image saved!', 'is-done');
+      setStatus('Image saved! ✓', 'is-done');
       lockBtns(false);
     }).catch(function (err) {
-      console.error(err);
+      unpatchGradient(gradient);
       restoreOpen(wasOpen);
+      console.error(err);
       setStatus('Could not capture image. Try again.', 'is-error');
       lockBtns(false);
     });
@@ -725,132 +755,137 @@ function saveAsImage() {
 }
 
 /* ============================================================
-   SAVE AS VIDEO (WebM ~8 seconds)
-   Composites live sparkle canvas + html2canvas page snapshot
-   each frame → MediaRecorder → WebM download
+   SAVE AS VIDEO (WebM, ~12 seconds)
+   Captures full-height page snapshot, then records a smooth
+   cinematic scroll from top → bottom over the sparkle canvas.
+   Timing: 1.5s hold at top · 7s scroll · 3.5s hold at bottom
    ============================================================ */
 function saveAsVideo() {
-  if (typeof html2canvas === 'undefined') {
-    setStatus('Library not loaded — check your connection.', 'is-error');
-    return;
-  }
-  if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) {
-    setStatus('Video recording not supported in this browser. Try Chrome.', 'is-error');
-    return;
-  }
+  if (typeof html2canvas === 'undefined') { setStatus('Library not loaded — check your connection.', 'is-error'); return; }
+  if (typeof MediaRecorder === 'undefined') { setStatus('Video not supported in this browser. Use Chrome.', 'is-error'); return; }
 
-  var DURATION = 8000; /* ms */
+  var DURATION   = 12000; /* total ms                  */
+  var HOLD_TOP   = 1500;  /* ms pause at top           */
+  var SCROLL_DUR = 7000;  /* ms for scroll animation   */
+  /* bottom hold = DURATION - HOLD_TOP - SCROLL_DUR = 3500ms */
 
   lockBtns(true);
   setStatus('Expanding messages…', 'is-active');
 
-  var wasOpen = expandAll();
+  var wasOpen  = expandAll();
+  var gradient = patchGradient();
 
   setTimeout(function () {
-    setStatus('Building video frame…', 'is-active');
-
+    setStatus('Rendering page…', 'is-active');
     var page     = document.getElementById('wish-page');
     var sparkCvs = document.getElementById('sparkles');
+    var VW = window.innerWidth;
+    var VH = window.innerHeight;
 
     html2canvas(page, {
-      backgroundColor: null,   /* transparent — we composite manually */
+      backgroundColor: null,
       scale: 1,
       useCORS: true,
       allowTaint: true,
       scrollX: 0,
       scrollY: 0,
-      width: page.offsetWidth,
+      width:  page.offsetWidth,
       height: page.scrollHeight,
       windowWidth: page.offsetWidth,
     }).then(function (pageSnap) {
+      unpatchGradient(gradient);
 
-      /* Build composite canvas at viewport size */
-      var VW = window.innerWidth;
-      var VH = window.innerHeight;
-
+      /* Composite canvas — viewport size (the "camera window") */
       var comp = document.createElement('canvas');
-      comp.width  = VW;
-      comp.height = VH;
+      comp.width = VW; comp.height = VH;
       var ctx = comp.getContext('2d');
 
-      /* Page content: centred horizontally, starts at top */
+      /* Horizontal centre offset for page within viewport */
       var px = Math.max(0, (VW - pageSnap.width) / 2);
 
-      /* Draw loop — composite sparkles + page on every frame */
-      var recording = true;
-      function drawFrame() {
-        ctx.fillStyle = '#09090f';
-        ctx.fillRect(0, 0, VW, VH);
-        ctx.drawImage(sparkCvs, 0, 0, VW, VH);
-        ctx.drawImage(pageSnap, px, 0);
-        if (recording) requestAnimationFrame(drawFrame);
-      }
-      requestAnimationFrame(drawFrame);
+      /* Total vertical scroll range (negative = scroll up) */
+      var maxScrollY = Math.max(0, pageSnap.height - VH);
 
-      /* Pick best supported MIME */
+      /* Given elapsed ms → Y offset of pageSnap (0 = top, -maxScrollY = bottom) */
+      function getPageY(elapsed) {
+        if (elapsed <= HOLD_TOP) return 0;
+        var scrollEnd = HOLD_TOP + SCROLL_DUR;
+        if (elapsed >= scrollEnd) return -maxScrollY;
+        var t = (elapsed - HOLD_TOP) / SCROLL_DUR;
+        return -easeInOut(t) * maxScrollY;
+      }
+
+      /* Pick best MIME */
       var mimeType =
         MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' :
         MediaRecorder.isTypeSupported('video/webm;codecs=vp8') ? 'video/webm;codecs=vp8' :
         MediaRecorder.isTypeSupported('video/webm')            ? 'video/webm' : '';
 
       if (!mimeType) {
-        recording = false;
         restoreOpen(wasOpen);
-        setStatus('Video not supported in this browser. Try Chrome.', 'is-error');
+        setStatus('Video not supported in this browser. Use Chrome.', 'is-error');
         lockBtns(false);
         return;
       }
 
+      /* Animation loop */
+      var startTime = null;
+      var active    = true;
+
+      function drawFrame(now) {
+        if (!startTime) startTime = now;
+        var elapsed = now - startTime;
+        var pageY   = getPageY(elapsed);
+
+        ctx.fillStyle = '#09090f';
+        ctx.fillRect(0, 0, VW, VH);
+        ctx.drawImage(sparkCvs, 0, 0, VW, VH);
+        ctx.drawImage(pageSnap, px, pageY);
+
+        if (active) requestAnimationFrame(drawFrame);
+      }
+      requestAnimationFrame(drawFrame);
+
+      /* MediaRecorder */
       var stream   = comp.captureStream(30);
       var recorder = new MediaRecorder(stream, { mimeType: mimeType });
       var chunks   = [];
 
       recorder.ondataavailable = function (e) { if (e.data.size > 0) chunks.push(e.data); };
-
       recorder.onstop = function () {
-        recording = false;
+        active = false;
         var blob = new Blob(chunks, { type: 'video/webm' });
         var url  = URL.createObjectURL(blob);
-        var link = document.createElement('a');
-        link.download = getFilename('webm');
-        link.href = url;
-        link.click();
+        var a    = document.createElement('a');
+        a.download = getFilename('webm');
+        a.href = url;
+        a.click();
         setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
 
-        /* Progress bar to full */
         document.getElementById('record-bar').style.width = '100%';
-
         restoreOpen(wasOpen);
-        setStatus('Video saved!', 'is-done');
+        setStatus('Video saved! ✓', 'is-done');
         lockBtns(false);
-
         setTimeout(function () {
           document.getElementById('record-progress').classList.remove('is-active');
-        }, 600);
+        }, 800);
       };
 
-      /* Start recording */
       recorder.start();
 
-      /* Progress bar */
+      /* Progress bar + countdown */
       var progressEl = document.getElementById('record-progress');
       var barEl      = document.getElementById('record-bar');
       progressEl.classList.add('is-active');
       barEl.style.width = '0%';
-
-      var elapsed = 0;
-      var tick    = 250;
+      var elapsed  = 0;
+      var tick     = 250;
       var interval = setInterval(function () {
         elapsed += tick;
-        var pct = Math.min((elapsed / DURATION) * 100, 97);
-        barEl.style.width = pct + '%';
-        var remaining = Math.ceil((DURATION - elapsed) / 1000);
-        if (remaining > 0) {
-          setStatus('Recording… ' + remaining + 's', 'is-active');
-        } else {
-          clearInterval(interval);
-          setStatus('Preparing download…', 'is-active');
-        }
+        barEl.style.width = Math.min((elapsed / DURATION) * 100, 97) + '%';
+        var rem = Math.ceil((DURATION - elapsed) / 1000);
+        setStatus(rem > 0 ? 'Recording… ' + rem + 's' : 'Preparing download…', 'is-active');
+        if (elapsed >= DURATION) clearInterval(interval);
       }, tick);
 
       setTimeout(function () {
@@ -859,8 +894,9 @@ function saveAsVideo() {
       }, DURATION);
 
     }).catch(function (err) {
-      console.error(err);
+      unpatchGradient(gradient);
       restoreOpen(wasOpen);
+      console.error(err);
       setStatus('Could not render video. Try again.', 'is-error');
       lockBtns(false);
     });
