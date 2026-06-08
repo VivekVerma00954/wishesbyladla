@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archive — Best Wishes by Ladla</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root {
+      --bg: #09090f;
+      --gold: #f5c518;
+      --gold-soft: rgba(245,197,24,0.12);
+      --white: #ffffff;
+      --white-70: rgba(255,255,255,0.7);
+      --white-40: rgba(255,255,255,0.4);
+      --white-20: rgba(255,255,255,0.2);
+      --white-10: rgba(255,255,255,0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      padding: 4rem 1.5rem 6rem;
+    }
+    .wrap {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-40);
+      text-decoration: none;
+      margin-bottom: 3rem;
+      transition: color 0.2s;
+    }
+    .back:hover { color: var(--white-70); }
+    .eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.6rem;
+      font-family: Georgia, serif;
+      background: linear-gradient(140deg, #ffffff 30%, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sub {
+      font-size: 0.9rem;
+      color: var(--white-40);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--white-10);
+      margin-bottom: 2.5rem;
+    }
+    .wish-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .wish-list li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--white-10);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--white-70);
+      background: rgba(255,255,255,0.025);
+      transition: border-color 0.25s, background 0.25s, color 0.25s;
+    }
+    .wish-list li a:hover {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+      color: var(--white);
+    }
+    .wish-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .wish-name {
+      font-size: 1rem;
+      font-family: Georgia, serif;
+      font-weight: 600;
+      color: inherit;
+    }
+    .wish-detail {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--white-40);
+    }
+    .wish-arrow {
+      font-size: 0.85rem;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .empty {
+      font-size: 0.9rem;
+      color: var(--white-20);
+      font-style: italic;
+    }
+    .footer-note {
+      margin-top: 3.5rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--white-10);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back">← Back to current wish</a>
+
+  <p class="eyebrow">Best Wishes by Ladla</p>
+  <h1>Archive</h1>
+  <p class="sub">Every wish, preserved. The words last — even when the page moves on.</p>
+
+  <div class="divider"></div>
+
+  <!--
+    ============================================================
+    ADD A NEW ENTRY HERE for each archived wish.
+    Format: /archive/firstname-year/
+    ============================================================
+  -->
+  <ul class="wish-list">
+
+    <li>
+      <a href="/archive/nandita-2026/">
+        <div class="wish-meta">
+          <span class="wish-name">Nandita</span>
+          <span class="wish-detail">Birthday &nbsp;·&nbsp; June 2026</span>
+        </div>
+        <span class="wish-arrow">›</span>
+      </a>
+    </li>
+
+    <!-- Add new entries above this line -->
+
+  </ul>
+
+  <p class="footer-note">bestwishesby.ladla.co.nz</p>
+</div>
+</body>
+</html>

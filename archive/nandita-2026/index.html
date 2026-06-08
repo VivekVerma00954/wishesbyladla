@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Nandita! 🎂 — Archived June 2026</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root {
+      --bg: #09090f;
+      --gold: #f5c518;
+      --gold-soft: rgba(245, 197, 24, 0.15);
+      --rose: #ff7eb3;
+      --white: #ffffff;
+      --white-70: rgba(255,255,255,0.7);
+      --white-40: rgba(255,255,255,0.4);
+      --white-10: rgba(255,255,255,0.08);
+      --white-05: rgba(255,255,255,0.04);
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Archive banner */
+    .archive-banner {
+      background: rgba(245,197,24,0.08);
+      border-bottom: 1px solid rgba(245,197,24,0.2);
+      padding: 0.6rem 1.5rem;
+      text-align: center;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,197,24,0.7);
+    }
+    .archive-banner a {
+      color: var(--gold);
+      text-decoration: none;
+      margin-left: 1rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .archive-banner a:hover { opacity: 1; }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 5rem;
+      text-align: center;
+    }
+    .birthday-badge {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      display: block;
+      letter-spacing: 0.4em;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(140deg, #ffffff 20%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
+    .hero-name {
+      font-size: clamp(3.2rem, 11vw, 6rem);
+      display: block;
+      color: var(--gold);
+    }
+    .tagline {
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 3rem;
+    }
+
+    /* Photo — graceful placeholder if image missing */
+    .photo-wrap {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 2.5rem;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 0 6px var(--gold-soft), 0 0 60px rgba(245,197,24,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245,197,24,0.05);
+    }
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-placeholder {
+      font-size: 3rem;
+      display: none;
+    }
+
+    .message {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--white-70);
+      max-width: 540px;
+      margin: 0 auto 3rem;
+    }
+    .message strong { color: var(--white); }
+    .message em { color: var(--white-40); font-style: italic; }
+
+    .buttons-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 1rem;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 3.5rem;
+    }
+    .wish-btn {
+      background: var(--white-05);
+      border: 1px solid var(--white-10);
+      color: var(--white);
+      padding: 1.1rem 1.25rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: Georgia, serif;
+      transition: border-color 0.25s, background 0.25s;
+      text-align: left;
+      width: 100%;
+    }
+    .wish-btn:hover, .wish-btn.is-open {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+    }
+    .wish-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .btn-header { display: flex; align-items: center; gap: 0.75rem; }
+    .btn-emoji { font-size: 1.4rem; flex-shrink: 0; }
+    .btn-title {
+      font-size: 0.95rem;
+      color: var(--white-70);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.02em;
+    }
+    .btn-arrow {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--white-40);
+      transition: transform 0.25s;
+      font-style: normal;
+    }
+    .wish-btn.is-open .btn-arrow { transform: rotate(90deg); }
+    .wish-reveal {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--white-10);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--white-70);
+      font-style: italic;
+    }
+    .wish-btn.is-open .wish-reveal { display: block; }
+    .wish-reveal em {
+      color: var(--white-40);
+      display: block;
+      font-size: 0.82rem;
+      margin-top: 0.75rem;
+    }
+
+    .signoff {
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--white-10);
+      margin-bottom: 2rem;
+    }
+    .signoff-from {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 0.6rem;
+    }
+    .signoff-names {
+      font-size: 1.5rem;
+      background: linear-gradient(120deg, var(--white) 40%, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+    .signoff-roles {
+      font-size: 0.8rem;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.05em;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-10);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--white-40); }
+  </style>
+</head>
+<body>
+
+<div class="archive-banner">
+  Archived · June 2026
+  <a href="/archive/">← Archive index</a>
+</div>
+
+<div class="page">
+
+  <div class="birthday-badge" aria-hidden="true">🎂 &nbsp; 🎉 &nbsp; 🥳</div>
+  <span class="eyebrow">It's a very special day</span>
+  <h1 class="hero-title">Happy Birthday<br><span class="hero-name">Nandita!</span></h1>
+  <p class="tagline">Omyra's Sohni Mausi &nbsp;·&nbsp; Ritika's Pyari Didi &nbsp;·&nbsp; Vivek's Favourite Sali</p>
+
+  <div class="photo-wrap">
+    <img src="wishespicture.jpg" alt="Nandita Sharma"
+         onerror="this.style.display='none'; document.querySelector('.photo-placeholder').style.display='block';" />
+    <span class="photo-placeholder" aria-hidden="true">🎂</span>
+  </div>
+
+  <p class="message">
+    To someone who holds <strong>three very important roles</strong> in this family —
+    the Mausi who Omyra runs to first, the Didi who Ritika pretends not to need advice from
+    <em>(but quietly does)</em>, and the Sali that Vivek has ranked number one
+    <em>(the audit committee has not reviewed competing claims)</em> —
+    may your birthday be as extraordinary as the person you are.
+    You deserve every good thing today. Especially cake. Mostly cake.
+  </p>
+
+  <p class="buttons-label">Tap for special messages</p>
+
+  <div class="buttons">
+
+    <button class="wish-btn" aria-expanded="false">
+      <div class="btn-header">
+        <span class="btn-emoji">🧸</span>
+        <span class="btn-title">Omyra's Very Important Message</span>
+        <span class="btn-arrow" aria-hidden="true">›</span>
+      </div>
+      <div class="wish-reveal">
+        MAUSI! MAUSI! It's your birthday!! 🎉🎉<br><br>
+        Mama said I have to say something nice, but I would have anyway because you're my FAVOURITE.
+        You always give me extra snacks and you never tell me it's bedtime.
+        That's what makes a great Mausi.<br><br>
+        I drawed you a picture but it got a bit wet. But the love is still there.
+        Happy Birthday! Can I have your cake? Just a little bit.
+        <em>— Omyra (your most excellent Bhanji) 🎨</em>
+      </div>
+    </button>
+
+    <button class="wish-btn" aria-expanded="false">
+      <div class="btn-header">
+        <span class="btn-emoji">😅</span>
+        <span class="btn-title">Didi, honestly speaking...</span>
+        <span class="btn-arrow" aria-hidden="true">›</span>
+      </div>
+      <div class="wish-reveal">
+        Okay Didi. Real talk, between sisters.<br><br>
+        You've been telling me what to do since before I could walk.
+        You've been right an annoyingly high percentage of the time.
+        I will not be giving you the exact number.<br><br>
+        I wouldn't trade you for anything — except on certain Sundays,
+        and even then I'd want you back by evening.
+        You make this family louder, warmer, and considerably more opinionated.
+        We wouldn't have it any other way.<br><br>
+        Happy Birthday, Didi. This year is yours. 💕
+        <em>— Ritika (your much cooler, slightly younger sister)</em>
+      </div>
+    </button>
+
+    <button class="wish-btn" aria-expanded="false">
+      <div class="btn-header">
+        <span class="btn-emoji">📋</span>
+        <span class="btn-title">Vivek's Official Statement</span>
+        <span class="btn-arrow" aria-hidden="true">›</span>
+      </div>
+      <div class="wish-reveal">
+        <em>The following statement has been reviewed, stamped, and formally approved by the
+        Office of Favourite Sali Rankings (OFSR), established 2024, sole jurisdiction: this family.</em><br><br>
+        Nandita ji —<br><br>
+        On behalf of myself, and no other Salis, I wish you a very Happy Birthday.
+        You have, over the years, brought warmth, excellent cooking, and the kind of
+        unsolicited feedback that I have come to deeply rely upon.<br><br>
+        Your position at the top of the Sali Rankings remains uncontested, unaudited,
+        and frankly — unchallenged. The trophy is in the mail. It's been in the mail for three years.
+        It will arrive.<br><br>
+        May this birthday bring you everything wonderful.
+        <em>— Vivek (Chairman, OFSR · Jija · Biggest Fan)</em>
+      </div>
+    </button>
+
+  </div>
+
+  <div class="signoff">
+    <p class="signoff-from">With all our love, from</p>
+    <p class="signoff-names">Omyra, Ritika &amp; Vivek</p>
+    <p class="signoff-roles">Your Bhanji &nbsp;·&nbsp; Your Chhoti Behn &nbsp;·&nbsp; Your Jija</p>
+  </div>
+
+  <a href="/archive/" class="back-link">← Archive index</a>
+</div>
+
+<script>
+document.querySelectorAll('.wish-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    this.classList.toggle('is-open');
+    this.setAttribute('aria-expanded', this.classList.contains('is-open') ? 'true' : 'false');
+  });
+});
+</script>
+
+</body>
+</html>

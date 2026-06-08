@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Happy Birthday Nandita! 🎂🎉</title>
+
+  <!-- html2canvas — used for image & video download -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     /* ============================================================
        DESIGN TOKENS
@@ -287,6 +291,108 @@
     }
 
     /* ============================================================
+       SAVE SECTION
+       ============================================================ */
+    .save-section {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--white-10);
+    }
+
+    .save-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 1rem;
+    }
+
+    .save-buttons {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .save-btn {
+      background: var(--white-05);
+      border: 1px solid var(--white-10);
+      color: var(--white-70);
+      padding: 0.8rem 1.4rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.03em;
+      transition: border-color 0.25s, background 0.25s, color 0.25s;
+      white-space: nowrap;
+    }
+
+    .save-btn:hover:not(:disabled) {
+      border-color: var(--gold);
+      background: var(--gold-soft);
+      color: var(--white);
+    }
+
+    .save-btn:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .save-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .save-status {
+      margin-top: 0.85rem;
+      font-size: 0.78rem;
+      color: var(--white-40);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      min-height: 1.1em;
+      letter-spacing: 0.04em;
+    }
+
+    .save-status.is-active { color: var(--gold); }
+    .save-status.is-done   { color: rgba(160, 230, 140, 0.8); }
+    .save-status.is-error  { color: rgba(255, 120, 120, 0.8); }
+
+    /* Video progress bar */
+    .record-progress {
+      display: none;
+      height: 2px;
+      background: var(--white-10);
+      border-radius: 2px;
+      margin-top: 0.75rem;
+      overflow: hidden;
+    }
+    .record-progress.is-active { display: block; }
+    .record-progress__bar {
+      height: 100%;
+      width: 0%;
+      background: var(--gold);
+      transition: width 0.5s linear;
+      border-radius: 2px;
+    }
+
+    /* ============================================================
+       ARCHIVE LINK
+       ============================================================ */
+    .archive-link {
+      display: block;
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-10);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .archive-link:hover { color: var(--white-40); }
+
+    /* ============================================================
        REDUCED MOTION
        ============================================================ */
     @media (prefers-reduced-motion: reduce) {
@@ -300,7 +406,7 @@
 
 <canvas id="sparkles" aria-hidden="true"></canvas>
 
-<div class="page">
+<div class="page" id="wish-page">
 
   <!-- ============================================================
        UPDATE THIS BLOCK FOR EACH NEW OCCASION
@@ -308,7 +414,8 @@
        Fields to change:
          <title>          — page tab title
          .eyebrow         — occasion type e.g. "Happy Birthday" / "Happy Anniversary"
-         .hero-title      — person's name
+         .hero-title      — main greeting
+         .hero-name       — person's name (used in download filenames automatically)
          .tagline         — relationship line
          .photo-wrap img  — src stays wishespicture.jpg, update alt
          .message         — main warm message (keep it personal)
@@ -326,7 +433,7 @@
   <p class="tagline">Omyra's Sohni Mausi &nbsp;·&nbsp; Ritika's Pyari Didi &nbsp;·&nbsp; Vivek's Favourite Sali</p>
 
   <div class="photo-wrap">
-    <img src="wishespicture.jpg" alt="Nandita Sharma" />
+    <img src="wishespicture.jpg" alt="Nandita Sharma" crossorigin="anonymous" />
   </div>
 
   <p class="message">
@@ -342,7 +449,7 @@
 
   <div class="buttons">
 
-    <button class="wish-btn" onclick="this.classList.toggle('is-open')" aria-expanded="false">
+    <button class="wish-btn" aria-expanded="false">
       <div class="btn-header">
         <span class="btn-emoji">🧸</span>
         <span class="btn-title">Omyra's Very Important Message</span>
@@ -359,7 +466,7 @@
       </div>
     </button>
 
-    <button class="wish-btn" onclick="this.classList.toggle('is-open')" aria-expanded="false">
+    <button class="wish-btn" aria-expanded="false">
       <div class="btn-header">
         <span class="btn-emoji">😅</span>
         <span class="btn-title">Didi, honestly speaking...</span>
@@ -379,7 +486,7 @@
       </div>
     </button>
 
-    <button class="wish-btn" onclick="this.classList.toggle('is-open')" aria-expanded="false">
+    <button class="wish-btn" aria-expanded="false">
       <div class="btn-header">
         <span class="btn-emoji">📋</span>
         <span class="btn-title">Vivek's Official Statement</span>
@@ -408,10 +515,29 @@
     <p class="signoff-roles">Your Bhanji &nbsp;·&nbsp; Your Chhoti Behn &nbsp;·&nbsp; Your Jija</p>
   </div>
 
+  <!-- ============================================================
+       SAVE SECTION — do not modify
+       ============================================================ -->
+  <div class="save-section">
+    <p class="save-label">Save this moment</p>
+    <div class="save-buttons">
+      <button class="save-btn" id="btn-image" onclick="saveAsImage()">📷 Save as Image</button>
+      <button class="save-btn" id="btn-video" onclick="saveAsVideo()">🎬 Download Video</button>
+    </div>
+    <p class="save-status" id="save-status" aria-live="polite"></p>
+    <div class="record-progress" id="record-progress">
+      <div class="record-progress__bar" id="record-bar"></div>
+    </div>
+  </div>
+
+  <a href="/archive/" class="archive-link" aria-label="View archive of past wishes">archive</a>
+
 </div>
 
 <script>
-/* Floating sparkles — canvas animation */
+/* ============================================================
+   SPARKLES — floating canvas animation
+   ============================================================ */
 (function () {
   'use strict';
   var canvas = document.getElementById('sparkles');
@@ -469,13 +595,277 @@
   loop();
 })();
 
-/* Button aria-expanded toggle */
+/* ============================================================
+   WISH BUTTONS — toggle open/close
+   ============================================================ */
 document.querySelectorAll('.wish-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
-    var open = this.classList.contains('is-open');
-    this.setAttribute('aria-expanded', open ? 'true' : 'false');
+    this.classList.toggle('is-open');
+    this.setAttribute('aria-expanded', this.classList.contains('is-open') ? 'true' : 'false');
   });
 });
+
+/* ============================================================
+   SAVE HELPERS
+   ============================================================ */
+
+/* Expand all 3 wish panels (returns a list of which were already open) */
+function expandAll() {
+  var btns = document.querySelectorAll('.wish-btn');
+  var wasOpen = [];
+  btns.forEach(function (b) {
+    wasOpen.push(b.classList.contains('is-open'));
+    b.classList.add('is-open');
+    b.setAttribute('aria-expanded', 'true');
+  });
+  return wasOpen;
+}
+
+/* Restore panels to their previous open/closed state */
+function restoreOpen(wasOpen) {
+  var btns = document.querySelectorAll('.wish-btn');
+  btns.forEach(function (b, i) {
+    if (wasOpen[i]) {
+      b.classList.add('is-open');
+      b.setAttribute('aria-expanded', 'true');
+    } else {
+      b.classList.remove('is-open');
+      b.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+/* Status bar helpers */
+function setStatus(msg, cls) {
+  var el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = 'save-status' + (cls ? ' ' + cls : '');
+}
+
+/* Derive a safe filename from the person's name shown on page */
+function getFilename(ext) {
+  var raw = document.querySelector('.hero-name');
+  var name = raw ? raw.textContent.replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase() : 'wishes';
+  var year = new Date().getFullYear();
+  return 'wishes-' + name + '-' + year + '.' + ext;
+}
+
+/* Lock/unlock both buttons during processing */
+function lockBtns(locked) {
+  document.getElementById('btn-image').disabled = locked;
+  document.getElementById('btn-video').disabled = locked;
+}
+
+/* ============================================================
+   SAVE AS IMAGE (PNG)
+   Uses html2canvas to composite sparkles + page content
+   ============================================================ */
+function saveAsImage() {
+  if (typeof html2canvas === 'undefined') {
+    setStatus('Library not loaded — check your connection.', 'is-error');
+    return;
+  }
+  lockBtns(true);
+  setStatus('Preparing image…', 'is-active');
+
+  var wasOpen = expandAll();
+
+  /* Wait a frame for the DOM to render expanded panels */
+  setTimeout(function () {
+    var page = document.getElementById('wish-page');
+    html2canvas(page, {
+      backgroundColor: '#09090f',
+      scale: window.devicePixelRatio || 2,
+      useCORS: true,
+      allowTaint: true,
+      scrollX: 0,
+      scrollY: 0,
+      width: page.offsetWidth,
+      height: page.scrollHeight,
+      windowWidth: page.offsetWidth,
+    }).then(function (pageSnap) {
+
+      /* Composite: background fill + sparkles (top portion) + page */
+      var sparkCvs = document.getElementById('sparkles');
+      var W = pageSnap.width;
+      var H = pageSnap.height;
+
+      var out = document.createElement('canvas');
+      out.width  = W;
+      out.height = H;
+      var ctx = out.getContext('2d');
+
+      ctx.fillStyle = '#09090f';
+      ctx.fillRect(0, 0, W, H);
+
+      /* Tile/clip sparkles across full height */
+      var sparkH = sparkCvs.height;
+      for (var y = 0; y < H; y += sparkH) {
+        ctx.drawImage(sparkCvs, 0, y, sparkCvs.width, Math.min(sparkH, H - y));
+      }
+
+      /* Page content centred */
+      ctx.drawImage(pageSnap, 0, 0);
+
+      var link = document.createElement('a');
+      link.download = getFilename('png');
+      link.href = out.toDataURL('image/png');
+      link.click();
+
+      restoreOpen(wasOpen);
+      setStatus('Image saved!', 'is-done');
+      lockBtns(false);
+    }).catch(function (err) {
+      console.error(err);
+      restoreOpen(wasOpen);
+      setStatus('Could not capture image. Try again.', 'is-error');
+      lockBtns(false);
+    });
+  }, 350);
+}
+
+/* ============================================================
+   SAVE AS VIDEO (WebM ~8 seconds)
+   Composites live sparkle canvas + html2canvas page snapshot
+   each frame → MediaRecorder → WebM download
+   ============================================================ */
+function saveAsVideo() {
+  if (typeof html2canvas === 'undefined') {
+    setStatus('Library not loaded — check your connection.', 'is-error');
+    return;
+  }
+  if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) {
+    setStatus('Video recording not supported in this browser. Try Chrome.', 'is-error');
+    return;
+  }
+
+  var DURATION = 8000; /* ms */
+
+  lockBtns(true);
+  setStatus('Expanding messages…', 'is-active');
+
+  var wasOpen = expandAll();
+
+  setTimeout(function () {
+    setStatus('Building video frame…', 'is-active');
+
+    var page     = document.getElementById('wish-page');
+    var sparkCvs = document.getElementById('sparkles');
+
+    html2canvas(page, {
+      backgroundColor: null,   /* transparent — we composite manually */
+      scale: 1,
+      useCORS: true,
+      allowTaint: true,
+      scrollX: 0,
+      scrollY: 0,
+      width: page.offsetWidth,
+      height: page.scrollHeight,
+      windowWidth: page.offsetWidth,
+    }).then(function (pageSnap) {
+
+      /* Build composite canvas at viewport size */
+      var VW = window.innerWidth;
+      var VH = window.innerHeight;
+
+      var comp = document.createElement('canvas');
+      comp.width  = VW;
+      comp.height = VH;
+      var ctx = comp.getContext('2d');
+
+      /* Page content: centred horizontally, starts at top */
+      var px = Math.max(0, (VW - pageSnap.width) / 2);
+
+      /* Draw loop — composite sparkles + page on every frame */
+      var recording = true;
+      function drawFrame() {
+        ctx.fillStyle = '#09090f';
+        ctx.fillRect(0, 0, VW, VH);
+        ctx.drawImage(sparkCvs, 0, 0, VW, VH);
+        ctx.drawImage(pageSnap, px, 0);
+        if (recording) requestAnimationFrame(drawFrame);
+      }
+      requestAnimationFrame(drawFrame);
+
+      /* Pick best supported MIME */
+      var mimeType =
+        MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' :
+        MediaRecorder.isTypeSupported('video/webm;codecs=vp8') ? 'video/webm;codecs=vp8' :
+        MediaRecorder.isTypeSupported('video/webm')            ? 'video/webm' : '';
+
+      if (!mimeType) {
+        recording = false;
+        restoreOpen(wasOpen);
+        setStatus('Video not supported in this browser. Try Chrome.', 'is-error');
+        lockBtns(false);
+        return;
+      }
+
+      var stream   = comp.captureStream(30);
+      var recorder = new MediaRecorder(stream, { mimeType: mimeType });
+      var chunks   = [];
+
+      recorder.ondataavailable = function (e) { if (e.data.size > 0) chunks.push(e.data); };
+
+      recorder.onstop = function () {
+        recording = false;
+        var blob = new Blob(chunks, { type: 'video/webm' });
+        var url  = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.download = getFilename('webm');
+        link.href = url;
+        link.click();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+
+        /* Progress bar to full */
+        document.getElementById('record-bar').style.width = '100%';
+
+        restoreOpen(wasOpen);
+        setStatus('Video saved!', 'is-done');
+        lockBtns(false);
+
+        setTimeout(function () {
+          document.getElementById('record-progress').classList.remove('is-active');
+        }, 600);
+      };
+
+      /* Start recording */
+      recorder.start();
+
+      /* Progress bar */
+      var progressEl = document.getElementById('record-progress');
+      var barEl      = document.getElementById('record-bar');
+      progressEl.classList.add('is-active');
+      barEl.style.width = '0%';
+
+      var elapsed = 0;
+      var tick    = 250;
+      var interval = setInterval(function () {
+        elapsed += tick;
+        var pct = Math.min((elapsed / DURATION) * 100, 97);
+        barEl.style.width = pct + '%';
+        var remaining = Math.ceil((DURATION - elapsed) / 1000);
+        if (remaining > 0) {
+          setStatus('Recording… ' + remaining + 's', 'is-active');
+        } else {
+          clearInterval(interval);
+          setStatus('Preparing download…', 'is-active');
+        }
+      }, tick);
+
+      setTimeout(function () {
+        clearInterval(interval);
+        recorder.stop();
+      }, DURATION);
+
+    }).catch(function (err) {
+      console.error(err);
+      restoreOpen(wasOpen);
+      setStatus('Could not render video. Try again.', 'is-error');
+      lockBtns(false);
+    });
+  }, 400);
+}
 </script>
 
 </body>
