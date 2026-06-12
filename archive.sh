@@ -23,7 +23,7 @@
 # =============================================================
 
 SLUG="$1"
-WEBROOT="/var/www/bestwishesby.ladla.co.nz"
+WEBROOT="/var/www/wishes"
 SRC="$WEBROOT/index.html"
 DEST="$WEBROOT/archive/$SLUG"
 
